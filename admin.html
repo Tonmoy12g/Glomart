@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlowMart — অ্যাডমিন</title>
+<style>
+  body { font-family: system-ui, "Noto Sans Bengali", sans-serif; margin: 0; background: #fdf2f6; color: #333; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 16px; }
+  h1 { color: #c8326b; }
+  .card { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.06); margin-bottom: 16px; }
+  input, button { font-size: 16px; padding: 10px 12px; border-radius: 8px; border: 1px solid #e5a8bd; }
+  button { background: #e84e87; color: #fff; border: none; cursor: pointer; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 8px; border-bottom: 1px solid #f3d3e0; vertical-align: top; }
+  th { color: #c8326b; }
+  .error { color: #c0392b; }
+  .badge { background: #276749; color: #fff; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🌸 GlowMart — অর্ডার অ্যাডমিন</h1>
+
+  <div class="card" id="login-card">
+    <p>অর্ডার দেখতে অ্যাডমিন পাসওয়ার্ড দিন:</p>
+    <input type="password" id="pw" placeholder="পাসওয়ার্ড">
+    <button onclick="loadOrders()">দেখুন</button>
+    <p class="error" id="err"></p>
+  </div>
+
+  <div class="card" id="orders-card" style="display:none">
+    <h2>অর্ডারসমূহ <span class="badge" id="count"></span></h2>
+    <div style="overflow-x:auto">
+    <table>
+      <thead>
+        <tr><th>অর্ডার আইডি</th><th>তারিখ</th><th>ক্রেতা</th><th>ফোন</th><th>ঠিকানা</th><th>পণ্য</th><th>মোট</th><th>স্ট্যাটাস</th></tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<script>
+async function loadOrders() {
+  const pw = document.getElementById('pw').value;
+  const err = document.getElementById('err');
+  err.textContent = '';
+  try {
+    const res = await fetch('/api/admin/orders?password=' + encodeURIComponent(pw));
+    const data = await res.json();
+    if (!res.ok || !data.ok) { err.textContent = 'ভুল পাসওয়ার্ড।'; return; }
+    document.getElementById('login-card').style.display = 'none';
+    document.getElementById('orders-card').style.display = 'block';
+    document.getElementById('count').textContent = data.orders.length + 'টি';
+    document.getElementById('rows').innerHTML = data.orders.map(o => {
+      const items = (o.items || []).map(i => `${i.name} × ${i.qty}`).join('<br>');
+      const date = new Date(o.created_at).toLocaleString('bn-BD');
+      return `<tr>
+        <td><b>${o.order_id}</b></td><td>${date}</td><td>${escapeHtml(o.name)}</td>
+        <td>${escapeHtml(o.phone)}</td><td>${escapeHtml(o.address)}</td>
+        <td>${items}</td><td>৳${o.total}</td><td>${escapeHtml(o.status)}</td>
+      </tr>`;
+    }).join('');
+  } catch (e) { err.textContent = 'নেটওয়ার্ক সমস্যা — আবার চেষ্টা করুন।'; }
+}
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+</script>
+</body>
+</html>

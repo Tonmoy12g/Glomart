@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlowMart — স্কিনকেয়ার অনলাইন শপ</title>
+<meta name="description" content="GlowMart — বাংলাদেশের অনলাইন স্কিনকেয়ার শপ। ক্যাশ অন ডেলিভারিতে অরিজিনাল পণ্য।">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ AUTH GATE (login/signup required before entering) ============ -->
+<div id="auth-gate" class="gate">
+  <div class="gate-card">
+    <div class="gate-brand">🌸 GlowMart</div>
+    <p class="gate-sub">কেনাকাটা করতে লগইন করুন</p>
+    <div class="gate-tabs">
+      <button type="button" id="tab-login" class="gate-tab active">লগইন</button>
+      <button type="button" id="tab-signup" class="gate-tab">নতুন অ্যাকাউন্ট</button>
+    </div>
+
+    <form id="login-form" class="gate-form" autocomplete="off">
+      <label>মোবাইল নম্বর
+        <input type="tel" id="login-phone" placeholder="01XXXXXXXXX" required>
+      </label>
+      <label>পাসওয়ার্ড
+        <input type="password" id="login-password" placeholder="পাসওয়ার্ড" required>
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">লগইন করুন</button>
+    </form>
+
+    <form id="signup-form" class="gate-form hidden" autocomplete="off">
+      <label>আপনার নাম
+        <input type="text" id="signup-name" placeholder="যেমন: মরিয়ম আক্তার" required>
+      </label>
+      <label>মোবাইল নম্বর
+        <input type="tel" id="signup-phone" placeholder="01XXXXXXXXX" required>
+      </label>
+      <label>পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)
+        <input type="password" id="signup-password" placeholder="পাসওয়ার্ড" minlength="6" required>
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">অ্যাকাউন্ট খুলুন</button>
+    </form>
+
+    <p id="gate-error" class="error"></p>
+    <p class="gate-note">একবার অ্যাকাউন্ট খুললে পরেরবার শুধু লগইন করলেই হবে।</p>
+  </div>
+</div>
+
+<!-- ============ STORE APP (hidden until logged in) ============ -->
+<div id="app" class="hidden">
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#">🌸 GlowMart</a>
+    <input id="search" type="search" placeholder="পণ্য খুঁজুন…">
+    <div class="header-right">
+      <span id="user-chip" class="user-chip" title="লগইন করা আছে"></span>
+      <button id="logout-btn" class="link-btn">লগআউট</button>
+      <button id="cart-btn" class="cart-btn">🛒 কার্ট <span id="cart-count" class="count-badge">০</span></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>প্রাকৃতিক উজ্জ্বল ত্বকের জন্য</h1>
+    <p>অরিজিনাল স্কিনকেয়ার পণ্য এখন আপনার দরজায় — ক্যাশ অন ডেলিভারি সুবিধাসহ।</p>
+    <a href="#catalog" class="btn btn-primary">পণ্য দেখুন</a>
+  </section>
+
+  <section id="catalog" class="catalog">
+    <h2>আমাদের পণ্য</h2>
+    <div id="category-chips" class="chips"></div>
+    <div id="product-grid" class="grid"></div>
+    <p id="no-results" class="hidden muted">কোনো পণ্য পাওয়া যায়নি।</p>
+  </section>
+
+  <section id="checkout-section" class="checkout hidden">
+    <h2>🧾 অর্ডার করুন</h2>
+    <form id="checkout-form" autocomplete="off">
+      <label>আপনার নাম *
+        <input type="text" id="co-name" required>
+      </label>
+      <label>মোবাইল নম্বর *
+        <input type="tel" id="co-phone" readonly>
+      </label>
+      <label>সম্পূর্ণ ডেলিভারি ঠিকানা *
+        <textarea id="co-address" rows="3" placeholder="বাসা/হোল্ডিং, রোড, এলাকা, থানা, জেলা" required></textarea>
+      </label>
+      <label>অর্ডার নোট (ঐচ্ছিক)
+        <textarea id="co-notes" rows="2" placeholder="বিশেষ নির্দেশনা থাকলে লিখুন"></textarea>
+      </label>
+      <fieldset class="payment-box">
+        <legend>পেমেন্ট মাধ্যম</legend>
+        <label class="radio-label"><input type="radio" name="payment" value="cod" checked> 💵 ক্যাশ অন ডেলিভারি</label>
+      </fieldset>
+      <div id="checkout-summary" class="order-summary"></div>
+      <p class="muted small">ডেলিভারি চার্জ অর্ডার কনফার্মের সময় ফোনে জানিয়ে দেওয়া হবে।</p>
+      <button type="submit" class="btn btn-primary btn-block">অর্ডার কনফার্ম করুন</button>
+      <p id="form-error" class="error"></p>
+    </form>
+  </section>
+
+  <section id="confirmation" class="confirmation hidden">
+    <div class="confirm-card">
+      <div class="confirm-icon">✅</div>
+      <h2>অর্ডার সফল হয়েছে!</h2>
+      <p>আপনার অর্ডার আইডি:</p>
+      <p class="order-id" id="order-id"></p>
+      <p class="muted">আমরা শীঘ্রই ফোন করে আপনার অর্ডার কনফার্ম করবো।<br>GlowMart-এ কেনাকাটা করার জন্য ধন্যবাদ!</p>
+      <button class="btn btn-primary" id="continue-shopping">আরও কেনাকাটা করুন</button>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p><strong>🌸 GlowMart</strong> — আপনার বিশ্বস্ত অনলাইন স্কিনকেয়ার শপ</p>
+  <p class="muted small">© ২০২৬ GlowMart • ক্যাশ অন ডেলিভারি সারা দেশে</p>
+</footer>
+
+</div><!-- /#app -->
+
+<!-- Product detail modal -->
+<div id="product-modal" class="modal hidden">
+  <div class="modal-card">
+    <button class="modal-close" id="modal-close">✕</button>
+    <img id="modal-img" alt="">
+    <h3 id="modal-name"></h3>
+    <p class="muted" id="modal-size"></p>
+    <p class="price" id="modal-price"></p>
+    <p id="modal-desc"></p>
+    <p class="muted small"><strong>ব্যবহারবিধি:</strong> <span id="modal-usage"></span></p>
+    <div class="qty-row">
+      <button type="button" id="modal-minus">−</button>
+      <span id="modal-qty">১</span>
+      <button type="button" id="modal-plus">+</button>
+    </div>
+    <button class="btn btn-primary btn-block" id="modal-add">কার্টে যোগ করুন</button>
+  </div>
+</div>
+
+<!-- Cart drawer -->
+<div id="drawer-overlay" class="overlay hidden"></div>
+<aside id="cart-drawer" class="drawer hidden">
+  <div class="drawer-head">
+    <h3>🛒 আপনার কার্ট</h3>
+    <button id="drawer-close" class="link-btn">✕ বন্ধ</button>
+  </div>
+  <div id="cart-items" class="drawer-items"></div>
+  <div class="drawer-foot">
+    <p class="total-row">সর্বমোট: <strong id="cart-total">৳০</strong></p>
+    <button class="btn btn-primary btn-block" id="go-checkout">অর্ডার করতে এগিয়ে যান</button>
+  </div>
+</aside>
+
+<script src="app.js"></script>
+</body>
+</html>
