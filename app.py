@@ -25,7 +25,7 @@ from flask import Flask, abort, g, jsonify, request, send_from_directory
 from werkzeug.security import check_password_hash, generate_password_hash
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FRONTEND_DIR = os.path.dirname(BASE_DIR)  # index.html, styles.css, app.js, images/
+FRONTEND_DIR = BASE_DIR  # flat layout: index.html etc. sit next to app.py
 PRODUCTS_PATH = os.path.join(FRONTEND_DIR, "products.json")
 DB_PATH = os.environ.get("ORDERS_DB", os.path.join(BASE_DIR, "orders.db"))
 
